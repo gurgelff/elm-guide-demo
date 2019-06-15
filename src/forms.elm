@@ -10,7 +10,8 @@ type alias Model =
     {
     name: String,
     password: String,
-    repeat: String
+    repeat: String,
+    age: Int
     }
 
 init: Model
@@ -18,13 +19,15 @@ init =
     {
     name = "",
     password = "",
-    repeat = ""
+    repeat = "",
+    age = 0
     }
 
 type Msg =
     Name String |
     Password String |
-    Repeat String 
+    Repeat String |
+    Age Int
 
 update: Msg -> Model -> Model
 update msg model =
@@ -36,10 +39,13 @@ update msg model =
 
         Repeat rrepeat  -> { model | repeat = rrepeat }
 
+        Age aage -> {model | age = aage}
+
 view: Model -> Html Msg 
 view model =
     div [][
         customInput "text" "Name" model.name Name,
+        customInput "text" "Age" (String.fromInt model.age) Age,
         customInput "password" "Password" model.password Password,
         customInput "password" "Repeat Password" model.repeat Repeat,
         chkpass model
@@ -51,8 +57,16 @@ customInput ttype pplace vvalue str2msg =
 
 chkpass: Model -> Html msg 
 chkpass model =
-
-    if model.password == model.repeat then
-        div[ style "color" "#2ce050" ] [text "OK"]
-    else
+    if String.length model.password < 8 then
+        div [ style "color" "red" ] [ text "The passwords < 8" ]
+    else if model.password /= model.repeat then
         div [ style "color" "#e50b3e" ] [ text "The passwords are different" ]
+    else if model.password == model.repeat then
+        div[ style "color" "#2ce050" ] [text "Passwords match"]
+    else
+        div [ style "color" "#e50b3e" ] [ text "OK" ]
+    
+
+
+    
+
